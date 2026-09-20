@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class Skill extends Model
 {
     protected $guarded = [];
 
-    public function skills()
+    public function projects()
     {
-        return $this->belongsToMany(Skill::class);
+        return $this->belongsToMany(Project::class);
     }
 }

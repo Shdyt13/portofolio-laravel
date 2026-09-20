@@ -1,9 +1,77 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
+/* Source Laravel */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* Custom Dark Mode */
+@custom-variant dark (&:is(.dark *));
+
+/* 1. Daftarkan Color Variables ke Tailwind Theme */
 @theme {
+    /* Font bawaan Laravel */
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Custom Colors untuk digunakan sebagai class Tailwind (bg-surface, text-fg, dll) */
+    --color-background: var(--bg-main);
+    --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
+    --color-fg: var(--text-fg);
+    --color-muted: var(--text-muted);
+    --color-line: var(--border-line);
+    --color-accent: var(--accent);
+    --color-accent-hover: var(--accent-hover);
+    --color-accent-soft: var(--accent-soft);
+}
+
+/* 2. Definisikan Nilai Warna Dasar */
+@layer base {
+    /* LIGHT MODE (Peningkatan Kontras & Kedalaman) */
+    :root {
+        --bg-main: #F1F5F9;       /* Sedikit lebih abu-abu (Slate 100) agar card putih menonjol */
+        --surface: #FFFFFF;       /* Putih bersih untuk Card */
+        --surface-2: #F8FAFC;     /* Putih keabu-abuan (Slate 50) untuk elemen dalam card / hover */
+        --text-fg: #0F172A;       /* Hitam pekat (Slate 900) */
+        --text-muted: #475569;    /* Abu-abu gelap (Slate 600) agar mudah dibaca */
+        --border-line: #CBD5E1;   /* Border sedikit lebih tegas (Slate 300) */
+        --accent: #2563EB;
+        --accent-hover: #1D4ED8;
+        --accent-soft: #DBEAFE;
+    }
+
+    /* DARK MODE (Tetap Dipertahankan) */
+    .dark {
+        --bg-main: #020817;
+        --surface: #0F1B2E;
+        --surface-2: #16243A;
+        --text-fg: #F8FAFC;
+        --text-muted: #94A3B8;
+        --border-line: #1E293B;
+        --accent: #3B82F6;
+        --accent-hover: #60A5FA;
+        --accent-soft: #1E3A8A;
+    }
+
+    /* Pengaturan Base HTML & Body */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-background text-fg transition-colors duration-300;
+    }
+}
+
+/* 3. Otomatisasi Efek Card (Shadow di Light, Flat di Dark) */
+@layer components {
+    /* Khusus di Light Mode: Berikan shadow lembut agar card terpisah jelas dari background */
+    :root .card {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Khusus di Dark Mode: Shadow dihilangkan agar tampilan tetap flat, clean & modern */
+    .dark .card {
+        box-shadow: none;
+    }
 }
