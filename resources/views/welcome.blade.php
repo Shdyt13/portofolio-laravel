@@ -156,14 +156,14 @@
         $about     = $profile?->about ?? 'I build modern web applications and explore the world of Artificial Intelligence and Machine Learning to create solutions that make an impact.';
         $email     = $profile?->email ?? 'saparhidayat@email.com';
 
-        // Navigasi
+        // Navigasi Khusus Landing Page (Scroll)
         $navLinks = [
             'home'         => 'Home', 
             'about'        => 'About', 
             'skills'       => 'Skills',
             'projects'     => 'Projects', 
             'certificates' => 'Certificates', 
-            'services'     => 'Service Fee', 
+            'services'     => 'Services', 
             'contact'      => 'Contact',
         ];
     @endphp
@@ -171,17 +171,28 @@
     <div class="font-body bg-page text-fg min-h-screen overflow-x-hidden transition-colors duration-300 selection:bg-blue-500/30">
 
         {{-- ================= NAVBAR ================= --}}
-        <header class="fixed inset-x-0 top-0 z-50 border-b border-line backdrop-blur-md" style="background: color-mix(in srgb, var(--bg) 80%, transparent);">
-            <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-12" aria-label="Main navigation">
+        <header class="fixed inset-x-0 top-0 z-50 border-b border-line backdrop-blur-md transition-all duration-300" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
+            <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-12" aria-label="Main navigation">
                 
                 <!-- Logo -->
-                <a href="#home" class="font-display text-2xl font-bold tracking-tight">My<span class="text-accent">profile</span></a>
+                <a href="/#home" class="font-display text-2xl font-bold tracking-tight text-fg hover:text-accent transition-colors">
+                    My<span class="text-accent">profile</span>
+                </a>
 
                 <!-- Desktop Menu -->
-                <div class="hidden items-center gap-8 text-sm font-medium md:flex">
+                <div class="hidden md:flex items-center gap-7 text-sm font-medium">
                     @foreach($navLinks as $id => $label)
-                        <a href="#{{ $id }}" data-nav="{{ $id }}" class="nav-link {{ $loop->first ? 'is-active' : '' }}">{{ $label }}</a>
+                        <a href="/#{{ $id }}" data-nav="{{ $id }}" class="nav-link {{ $loop->first ? 'is-active' : '' }}">
+                            {{ $label }}
+                        </a>
                     @endforeach
+                    
+                    <!-- Link Ekstra: Art Gallery (Beda Halaman) -->
+                    <div class="h-5 w-px bg-line mx-1"></div> {{-- Garis Pemisah --}}
+                    <a href="/gallery" class="inline-flex items-center gap-1.5 text-accent font-semibold hover:text-blue-500 transition-colors">
+                        Gallery
+                        <!-- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg> -->
+                    </a>
                 </div>
 
                 <!-- Actions -->
@@ -191,7 +202,7 @@
                         <svg class="icon-moon h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                     </button>
 
-                    <!-- Dibungkus md:hidden agar tidak bentrok dengan display:grid di .icon-btn -->
+                    <!-- Hamburger Button (Mobile) -->
                     <div class="md:hidden">
                         <button type="button" id="menu-btn" aria-label="Open menu" aria-expanded="false" class="icon-btn">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -202,10 +213,17 @@
 
             {{-- Mobile Menu --}}
             <div id="mobile-menu" class="hidden border-t border-line shadow-lg md:hidden" style="background: var(--surface);">
-                <div class="mx-auto flex max-w-7xl flex-col px-6 py-4 text-sm font-medium">
+                <div class="mx-auto flex max-w-7xl flex-col px-6 py-2 text-sm font-medium">
                     @foreach($navLinks as $id => $label)
-                        <a href="#{{ $id }}" data-nav-mobile="{{ $id }}" class="mobile-link block py-3 text-muted border-b border-line last:border-0 hover:text-accent transition-colors">{{ $label }}</a>
+                        <a href="/#{{ $id }}" data-nav-mobile="{{ $id }}" class="mobile-link block py-3.5 text-muted border-b border-line hover:text-accent transition-colors">
+                            {{ $label }}
+                        </a>
                     @endforeach
+                    <!-- Link Ekstra Mobile -->
+                    <a href="/gallery" class="flex items-center justify-between py-3.5 text-accent font-semibold hover:text-blue-500 transition-colors">
+                        Art Gallery
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
                 </div>
             </div>
         </header>
@@ -273,41 +291,119 @@
                     
                     <!-- Social Links (Terhubung dengan Database) -->
                     <div class="w-full md:w-1/3 flex flex-col justify-center border-t md:border-t-0 md:border-l border-line pt-6 md:pt-0 md:pl-8">
-                        <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-4">Connect with me</p>
-                        
-                        <div class="flex flex-col gap-3">
-                            @if($profile?->github_url)
-                                <a href="{{ $profile->github_url }}" target="_blank" rel="noopener" class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
-                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                                    </span>
-                                    GitHub
-                                </a>
-                            @endif
+                    <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+                        Connect with me
+                    </p>
 
-                            @if($profile?->linkedin_url)
-                                <a href="{{ $profile->linkedin_url }}" target="_blank" rel="noopener" class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
-                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                                    </span>
-                                    LinkedIn
-                                </a>
-                            @endif
+                    <div class="flex flex-col gap-3">
 
-                            @if($profile?->instagram_url)
-                                <a href="{{ $profile->instagram_url }}" target="_blank" rel="noopener" class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                                    </span>
-                                    Instagram
-                                </a>
-                            @endif
-                            
-                            <!-- Fallback jika belum ada link yang diisi -->
-                            @if(empty($profile?->github_url) && empty($profile?->linkedin_url) && empty($profile?->instagram_url))
-                                <p class="text-sm text-muted">Belum ada tautan sosial media yang ditambahkan.</p>
-                            @endif
-                        </div>
+                        {{-- GitHub --}}
+                        @if($profile?->github_url)
+                            <a href="{{ $profile->github_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
+
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
+                                    <svg class="h-5 w-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                </span>
+
+                                GitHub
+                            </a>
+                        @endif
+
+
+                        {{-- LinkedIn --}}
+                        @if($profile?->linkedin_url)
+                            <a href="{{ $profile->linkedin_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
+
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
+                                    <svg class="h-5 w-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                    </svg>
+                                </span>
+
+                                LinkedIn
+                            </a>
+                        @endif
+
+
+                        {{-- Instagram --}}
+                        @if($profile?->instagram_url)
+                            <a href="{{ $profile->instagram_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
+
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
+                                    <svg class="h-5 w-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                                    </svg>
+                                </span>
+
+                                Instagram
+                            </a>
+                        @endif
+
+
+                        {{-- CV --}}
+                        @if($profile?->cv_link)
+                            <a href="{{ $profile->cv_link }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="flex items-center gap-3 text-sm font-medium text-fg hover:text-accent transition-colors group">
+
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-line group-hover:border-accent transition-colors">
+                                    <svg class="h-5 w-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                        <polyline points="10 9 9 9 8 9"/>
+                                    </svg>
+                                </span>
+
+                                Lihat CV
+                            </a>
+                        @endif
+
+
+                        {{-- Fallback --}}
+                        @if(
+                            empty($profile?->github_url) &&
+                            empty($profile?->linkedin_url) &&
+                            empty($profile?->instagram_url) &&
+                            empty($profile?->cv_link)
+                        )
+                            <p class="text-sm text-muted">
+                                Belum ada tautan yang ditambahkan.
+                            </p>
+                        @endif
+
                     </div>
                 </div>
             </section>
@@ -457,6 +553,12 @@
 
                             {{-- Gambar sertifikat dengan rasio aspect-video (16:9) agar tidak terlalu tinggi --}}
                             <div class="relative aspect-video w-full overflow-hidden bg-surface-2 border-b border-line">
+                                @if($certificate->category)
+                                    <span class="absolute top-3 left-3 z-10 rounded-full bg-black/60 backdrop-blur px-2.5 py-1 text-xs font-semibold text-white">
+                                        {{ $certificate->category }}
+                                    </span>
+                                @endif
+
                                 @if($certificate->image)
                                     <img
                                         src="{{ Storage::url($certificate->image) }}"
@@ -478,22 +580,31 @@
                                     {{ $certificate->name }}
                                 </h3>
 
-                                {{-- mt-auto dihapus dari sini agar tidak bentrok dengan footer --}}
-                                <p class="text-sm font-medium text-muted mb-4">
+                                <p class="text-sm font-medium text-muted mb-1">
                                     <span class="text-fg-soft">{{ $certificate->issuer }}</span>
-                                    @if($certificate->date)
-                                        <span class="mx-1">&bull;</span> {{ \Carbon\Carbon::parse($certificate->date)->format('M Y') }}
+                                    @if($certificate->issue_date)
+                                        <span class="mx-1">&bull;</span> {{ \Carbon\Carbon::parse($certificate->issue_date)->format('M Y') }}
                                     @endif
                                 </p>
 
+                                @if($certificate->credential_id)
+                                    <p class="text-xs text-muted/70 mb-4">
+                                        ID: {{ $certificate->credential_id }}
+                                    </p>
+                                @else
+                                    <div class="mb-4"></div>
+                                @endif
+
                                 {{-- Footer Kredensial - Hanya diletakkan mt-auto di sini --}}
                                 <div class="mt-auto pt-4 border-t border-line flex items-center justify-between">
-                                    @php
-                                        $credentialLink = $certificate->file_url ?: ($certificate->image ? Storage::url($certificate->image) : null);
-                                    @endphp
-                                    @if($credentialLink)
-                                        <a href="{{ $credentialLink }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-blue-600 transition-colors group/link">
+                                    @if($certificate->credential_url)
+                                        <a href="{{ $certificate->credential_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-blue-600 transition-colors group/link">
                                             View Credential
+                                            <svg class="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                        </a>
+                                    @elseif($certificate->image)
+                                        <a href="{{ Storage::url($certificate->image) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-blue-600 transition-colors group/link">
+                                            View Certificate
                                             <svg class="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                         </a>
                                     @else
@@ -540,10 +651,10 @@
                                 </h4>
                             </div>
 
-                            @if($service->fee)
+                            @if($service->price)
                                 <div class="mb-3">
                                     <span class="inline-flex items-center text-accent font-semibold text-xs bg-surface px-3 py-1 rounded-full border border-line">
-                                        {{ $service->fee }}
+                                        {{ $service->price }}
                                     </span>
                                 </div>
                             @endif

@@ -19,7 +19,7 @@ class ProfileResource extends Resource
     protected static string|\BackedEnum|null $activeNavigationIcon = 'heroicon-s-user-circle';
 
     protected static \UnitEnum|string|null $navigationGroup = 'Content';
-    protected static ?string $navigationLabel = 'Profil Saya';
+    protected static ?string $navigationLabel = 'My Profile';
     protected static ?int $navigationSort = 1;
 
     protected static ?string $modelLabel = 'profil';
@@ -37,7 +37,7 @@ class ProfileResource extends Resource
      */
     public static function getNavigationBadge(): ?string
     {
-        return Profile::count() > 0 ? 'Aktif' : 'Kosong';
+        return Profile::count() > 0 ? 'Active' : 'Empty';
     }
 
     public static function getNavigationBadgeColor(): ?string

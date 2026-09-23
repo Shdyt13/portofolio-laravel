@@ -18,9 +18,6 @@ class ServiceResource extends Resource
 {
     protected static ?string $model = Service::class;
 
-    // Disamakan dengan enum Heroicon seperti resource Projects & Certificates
-    // (sebelumnya string 'heroicon-o-briefcase' — tetap valid, tapi enum lebih konsisten
-    // dan memberi versi filled otomatis saat menu aktif).
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Briefcase;
@@ -31,8 +28,6 @@ class ServiceResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    // Disatukan ke grup "Content" agar konsisten dengan Projects & Certificates
-    // (sebelumnya "Communication", yang membuat menu ini terpisah sendiri di sidebar).
     protected static \UnitEnum|string|null $navigationGroup = 'Content';
 
     public static function form(Schema $schema): Schema

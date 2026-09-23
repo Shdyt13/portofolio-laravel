@@ -9,8 +9,10 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -32,20 +34,29 @@ class CertificatesTable
                     ->sortable()
                     ->description(fn ($record) => $record->issuer),
 
-                TextColumn::make('date')
+                TextColumn::make('category')
+                    ->label('Kategori')
+                    ->badge()
+                    ->sortable()
+                    ->placeholder('—'),
+
+                TextColumn::make('issue_date')
                     ->label('Tanggal Terbit')
                     ->date('d M Y')
                     ->sortable()
                     ->placeholder('—'),
 
-                IconColumn::make('file_url')
+                IconColumn::make('credential_url')
                     ->label('Kredensial')
                     ->icon('heroicon-o-link')
                     ->color(fn ($state) => filled($state) ? 'primary' : 'gray')
-                    ->url(fn ($record) => $record->file_url, shouldOpenInNewTab: true)
-                    ->tooltip(fn ($record) => $record->file_url ?: 'Belum ada tautan kredensial'),
+                    ->url(fn ($record) => $record->credential_url, shouldOpenInNewTab: true)
+                    ->tooltip(fn ($record) => $record->credential_url ?: 'Belum ada tautan kredensial'),
+
+                ToggleColumn::make('is_visible')
+                    ->label('Tampil'),
             ])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('issue_date', 'desc')
             ->filters([
                 SelectFilter::make('issuer')
                     ->label('Penerbit')
@@ -54,6 +65,17 @@ class CertificatesTable
                         ->whereNotNull('issuer')
                         ->pluck('issuer', 'issuer')
                         ->toArray()),
+
+                SelectFilter::make('category')
+                    ->label('Kategori')
+                    ->options(fn () => \App\Models\Certificate::query()
+                        ->distinct()
+                        ->whereNotNull('category')
+                        ->pluck('category', 'category')
+                        ->toArray()),
+
+                TernaryFilter::make('is_visible')
+                    ->label('Status Tampil'),
 
                 Filter::make('has_image')
                     ->label('Punya gambar')

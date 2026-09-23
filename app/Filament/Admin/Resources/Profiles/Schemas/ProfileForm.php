@@ -53,6 +53,13 @@ class ProfileForm
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon(Heroicon::OutlinedBriefcase),
+
+                        TextInput::make('cv_link')
+                        ->label('Link Google Drive CV')
+                        ->url()
+                        ->placeholder('https://drive.google.com/file/d/...')
+                        ->maxLength(255)
+                        ->columnSpanFull(),
                     ]),
 
                 Section::make('Tentang Saya')

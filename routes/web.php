@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Models\Gallery;
 
 // Mengarah ke HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -14,3 +15,10 @@ Route::post('/contact', [HomeController::class, 'sendMessage'])
 Route::get('/login', function () {
     return redirect('/admin/login');
 })->name('login');
+
+Route::get('/gallery', function () {
+    // Mengambil data galeri, asumsikan ada kolom is_visible dan diurutkan dari yang terbaru
+    $galleries = Gallery::where('is_visible', true)->latest()->get(); 
+    
+    return view('gallery', compact('galleries'));
+})->name('gallery');

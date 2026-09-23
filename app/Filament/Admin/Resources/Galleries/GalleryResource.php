@@ -16,13 +16,36 @@ use Filament\Tables\Table;
 
 class GalleryResource extends Resource
 {
+    protected static ?int $navigationSort = 6;
+
     protected static ?string $model = Gallery::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
+
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Photo;
 
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
+
+    protected static ?string $navigationLabel = 'My Gallery';
+
+    protected static ?string $modelLabel = 'Lukisan';
+
+    protected static ?string $pluralModelLabel = 'Galeri Lukisan';
+
+    public static function getNavigationBadge(): ?string
+    {
+        // Contoh ini akan menampilkan jumlah total lukisan di database.
+        // Jika Anda ingin teks statis seperti "Aktif", ubah menjadi: return 'Aktif';
+        return static::getModel()::count();
+    }
+
+    // 2. Mengatur warna badge menjadi hijau
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'success'; // 'success' adalah warna hijau bawaan dari Filament/Tailwind
+    }
 
     public static function form(Schema $schema): Schema
     {

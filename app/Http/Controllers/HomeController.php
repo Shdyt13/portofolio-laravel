@@ -32,13 +32,22 @@ class HomeController extends Controller
         // Ambil data profil pertama dari database
         $profile = Profile::first();
 
-        // Jika profil belum diisi di Admin, berikan data kosong default
+        // Jika profil belum diisi di Admin, berikan data kosong default yang mencakup semua properti
         if (!$profile) {
             $profile = (object) [
-                'name' => 'Nama Belum Diatur',
-                'title' => 'Profesi Belum Diatur',
+                'name' => 'Sapar Hidayat. S',
+                'title' => 'Informatics Engineering Student',
                 'about' => 'Deskripsi belum diatur. Silakan isi melalui panel Admin.',
+                'short_description' => 'Deskripsi singkat belum diatur.',
+                'full_description' => 'Deskripsi lengkap belum diatur.',
                 'avatar' => null,
+                'photo' => null,
+                'email' => null,
+                'location' => null,
+                'github_url' => '#',
+                'linkedin_url' => '#',
+                'instagram_url' => '#',
+                'cv_link' => '#',
             ];
         }
 

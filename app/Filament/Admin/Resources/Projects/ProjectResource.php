@@ -28,7 +28,7 @@ class ProjectResource extends Resource
 
     protected static ?string $navigationLabel = 'Projects';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     // Perbaikan tipe data di baris ini:
     protected static \UnitEnum|string|null $navigationGroup = 'Content';

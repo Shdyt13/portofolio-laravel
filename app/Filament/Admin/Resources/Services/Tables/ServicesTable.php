@@ -31,7 +31,10 @@ class ServicesTable
                     ->sortable()
                     ->description(fn ($record) => str($record->description ?? '')->limit(50)),
 
-                TextColumn::make('fee')
+                // Sebelumnya kolom ini masih memakai nama field lama 'fee',
+                // padahal form & model sudah memakai 'price' — menyebabkan
+                // error "Unknown column 'fee'" saat halaman list dibuka.
+                TextColumn::make('price')
                     ->label('Tarif')
                     ->badge()
                     ->color('success')

@@ -19,8 +19,8 @@ class SkillResource extends Resource
     protected static ?string $model = Skill::class;
 
     // Ikon outline saat menu tidak aktif, solid saat sedang dibuka.
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::RectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCommandLine;
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::CommandLine;
 
     protected static ?string $recordTitleAttribute = 'name';
 

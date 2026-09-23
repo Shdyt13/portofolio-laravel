@@ -7,9 +7,4 @@ use Illuminate\Database\Eloquent\Model;
 class Gallery extends Model
 {
     protected $guarded = [];
-
-        public function additionalSkill()
-        {
-            return $this->belongsTo(AdditionalSkill::class);
-        }
 }
