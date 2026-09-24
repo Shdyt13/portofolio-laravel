@@ -21,7 +21,7 @@ class GalleriesTable
         return $table
             ->columns([
                 ImageColumn::make('image')
-                    ->label('Karya')
+                    ->label('Works')
                     ->size(72)
                     ->extraImgAttributes([
                         'class' => 'rounded-xl object-cover shadow-sm ring-1 ring-gray-950/5',
@@ -29,7 +29,7 @@ class GalleriesTable
                     ->grow(false),
 
                 TextColumn::make('title')
-                    ->label('Judul Lukisan')
+                    ->label('Title')
                     ->weight('semibold')
                     ->searchable()
                     ->sortable()
@@ -39,7 +39,7 @@ class GalleriesTable
                         : null),
 
                 ToggleColumn::make('is_visible')
-                    ->label('Tampil di Publik')
+                    ->label('Display in Public')
                     ->sortable()
                     ->alignCenter(),
 
@@ -55,17 +55,17 @@ class GalleriesTable
             ->filters([
                 TernaryFilter::make('is_visible')
                     ->label('Visibilitas')
-                    ->placeholder('Semua Lukisan')
-                    ->trueLabel('Tampil di Publik')
-                    ->falseLabel('Disembunyikan'),
+                    ->placeholder('All Images')
+                    ->trueLabel('Display in Public')
+                    ->falseLabel('Hidden'),
             ])
             ->recordActions([
                 EditAction::make()
                     ->iconButton()
-                    ->tooltip('Ubah'),
+                    ->tooltip('Change'),
                 DeleteAction::make()
                     ->iconButton()
-                    ->tooltip('Hapus'),
+                    ->tooltip('Delete'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -76,7 +76,7 @@ class GalleriesTable
             ->striped()
             ->paginated([12, 24, 50])
             ->emptyStateIcon(Heroicon::OutlinedPhoto)
-            ->emptyStateHeading('Belum Ada Lukisan')
-            ->emptyStateDescription('Unggah karya seni pertama Anda untuk mulai mengisi galeri.');
+            ->emptyStateHeading('No Image Yet')
+            ->emptyStateDescription('Upload your first artwork to start filling the gallery.');
     }
 }

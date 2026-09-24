@@ -14,55 +14,55 @@ class ServiceForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Layanan')
-                    ->description('Detail utama layanan yang akan ditampilkan di halaman publik.')
+                Section::make('Service Information')
+                    ->description('Main details of the service to be displayed on the public page.')
                     ->columns(2)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nama Layanan')
+                            ->label('Service Name')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Contoh: Website Development')
+                            ->placeholder('Example: Website Development')
                             ->columnSpanFull(),
 
                         TextInput::make('icon')
                             ->label('Icon (Heroicon)')
                             ->maxLength(255)
                             ->placeholder('heroicon-o-code-bracket')
-                            ->helperText('Nama heroicon yang dipakai di frontend, mis. heroicon-o-sparkles.')
+                            ->helperText('Name of the heroicon to be used in the frontend, e.g., heroicon-o-sparkles.')
                             ->prefixIcon('heroicon-o-sparkles')
                             ->columnSpan(1),
 
                         TextInput::make('price')
                             ->label('Tarif / Harga')
                             ->maxLength(255)
-                            ->placeholder('Contoh: Mulai dari Rp1.500.000')
-                            ->helperText('Boleh diisi angka atau teks bebas.')
+                            ->placeholder('Example: Starting from Rp1.500.000')
+                            ->helperText('Can be filled with a number or free text.')
                             ->columnSpan(1),
 
                         Textarea::make('description')
-                            ->label('Deskripsi')
+                            ->label('Description')
                             ->rows(4)
                             ->maxLength(1000)
-                            ->placeholder('Jelaskan singkat cakupan layanan ini...')
+                            ->placeholder('Briefly describe the scope of this service...')
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Tampilan')
-                    ->description('Pengaturan urutan dan visibilitas layanan.')
+                Section::make('Display Settings')
+                    ->description('Settings for the order and visibility of the service.')
                     ->columns(2)
                     ->schema([
                         TextInput::make('display_order')
-                            ->label('Urutan Tampil')
+                            ->label('Display Order')
                             ->numeric()
                             ->default(0)
                             ->required()
                             ->minValue(0)
-                            ->helperText('Angka lebih kecil tampil lebih dulu.')
+                            ->helperText('Smaller numbers appear first.')
                             ->columnSpan(1),
 
                         Toggle::make('is_visible')
-                            ->label('Tampilkan di Halaman Publik')
+                            ->label('Visible')
                             ->default(true)
                             ->inline(false)
                             ->columnSpan(1),

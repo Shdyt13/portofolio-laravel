@@ -298,9 +298,9 @@
         {{-- ================= KONTEN UTAMA ================= --}}
         <main class="flex-grow mx-auto max-w-7xl px-5 lg:px-12 py-12 w-full">
             <div class="mb-12 text-center">
-                <h1 class="font-display text-3xl sm:text-4xl font-bold mb-4">Koleksi <span class="text-accent">Lukisan</span></h1>
+                <h1 class="font-display text-3xl sm:text-4xl font-bold mb-4">My <span class="text-accent">Gallery</span></h1>
                 <p class="text-muted max-w-xl mx-auto text-sm sm:text-base leading-relaxed px-2">
-                    Ruang bagi saya untuk berekspresi di luar baris kode. Berikut adalah beberapa karya lukisan yang saya buat di waktu luang.
+                    A space for self-expression beyond lines of code. Here, I share various works, explorations, moments, and things I enjoy or find meaningful.
                 </p>
             </div>
 
@@ -367,7 +367,7 @@
                             </svg>
                         </a>
                         {{-- Icon LinkedIn --}}
-                        <a href="https://linkedin.com/in/shdyt13" target="_blank" class="text-muted hover:text-accent transition-colors" aria-label="LinkedIn">
+                        <a href="https://www.linkedin.com/in/sapar-hidayat-s-200684301/" target="_blank" class="text-muted hover:text-accent transition-colors" aria-label="LinkedIn">
                             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
                             </svg>

@@ -15,14 +15,14 @@ class EditProfile extends EditRecord
     {
         return [
             Action::make('viewSite')
-                ->label('Lihat Halaman Depan')
+                ->label('View the Home Page')
                 ->icon('heroicon-o-arrow-top-right-on-square')
                 ->color('gray')
                 ->url('/')
                 ->openUrlInNewTab(),
 
             DeleteAction::make()
-                ->label('Hapus Profil'),
+                ->label('Delete Profile'),
         ];
     }
 

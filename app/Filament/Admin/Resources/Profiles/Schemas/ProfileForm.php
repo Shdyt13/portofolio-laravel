@@ -16,8 +16,8 @@ class ProfileForm
         return $schema
             ->columns(3)
             ->components([
-                Section::make('Foto Profil')
-                    ->description('Gambar ini tampil sebagai avatar di halaman depan.')
+                Section::make('Profile Photo')
+                    ->description('This image appears as the avatar on the front page.')
                     ->icon(Heroicon::OutlinedCamera)
                     ->columnSpan(1)
                     ->schema([
@@ -30,26 +30,26 @@ class ProfileForm
                             ->directory('profile')
                             ->visibility('public')
                             ->maxSize(2048)
-                            ->helperText('JPG, PNG, atau WEBP. Maksimal 2 MB.')
+                            ->helperText('JPG, PNG, or WEBP. Maximum 2 MB.')
                             ->alignCenter(),
                     ]),
 
-                Section::make('Informasi Dasar')
-                    ->description('Nama dan profesi yang ditampilkan di bagian hero.')
+                Section::make('Basic Information')
+                    ->description('Name and profession displayed in the hero section.')
                     ->icon(Heroicon::OutlinedIdentification)
                     ->columnSpan(2)
                     ->columns(2)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nama Lengkap')
-                            ->placeholder('Contoh: Rangga Pratama')
+                            ->label('Full Name')
+                            ->placeholder('Example: Sapar Hidayat. S')
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon(Heroicon::OutlinedUser),
 
                         TextInput::make('title')
-                            ->label('Profesi / Jabatan')
-                            ->placeholder('Contoh: Fullstack Web Developer')
+                            ->label('Profession / Position')
+                            ->placeholder('Example: Fullstack Web Developer')
                             ->required()
                             ->maxLength(255)
                             ->prefixIcon(Heroicon::OutlinedBriefcase),
@@ -62,14 +62,14 @@ class ProfileForm
                         ->columnSpanFull(),
                     ]),
 
-                Section::make('Tentang Saya')
-                    ->description('Deskripsi singkat, 2–4 kalimat sudah cukup.')
+                Section::make('About Me')
+                    ->description('Brief description, 2–4 sentences is enough.')
                     ->icon(Heroicon::OutlinedDocumentText)
                     ->columnSpanFull()
                     ->schema([
                         Textarea::make('about')
                             ->hiddenLabel()
-                            ->placeholder('Ceritakan pengalaman, keahlian, dan minat Anda...')
+                            ->placeholder('Tell us about your experience, skills, and interests...')
                             ->required()
                             ->rows(6)
                             ->maxLength(1000)
@@ -79,8 +79,8 @@ class ProfileForm
                     ]),
 
                 // SECTION BARU UNTUK SOSIAL MEDIA
-                Section::make('Sosial Media')
-                    ->description('Tautan profil untuk dihubungkan di bagian About.')
+                Section::make('Social Media')
+                    ->description('Profile links to be connected in the About section.')
                     ->icon('heroicon-o-link')
                     ->columns(3)
                     ->columnSpanFull()

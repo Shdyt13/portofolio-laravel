@@ -19,17 +19,15 @@ class ProjectForm
             ->columns(3) // Membagi keseluruhan form menjadi 3 kolom utama
             ->components([
                 
-                // ==========================================
                 // KONTEN UTAMA (KIRI) - Mengambil 2 Kolom
-                // ==========================================
                 Grid::make(1)
                     ->schema([
-                        Section::make('Informasi Project')
-                            ->description('Detail utama project yang akan ditampilkan ke publik.')
+                        Section::make('Project Information')
+                            ->description('Main details of the project to be displayed to the public.')
                             ->columns(2) // Input di dalam section ini dibagi 2
                             ->components([
                                 TextInput::make('name')
-                                    ->label('Nama Project')
+                                    ->label('Project Name')
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpan(1),
@@ -52,7 +50,7 @@ class ProjectForm
                                     ->columnSpanFull(),
 
                                 Textarea::make('description')
-                                    ->label('Deskripsi')
+                                    ->label('Description')
                                     ->rows(5) // Sedikit ditinggikan agar lebih nyaman untuk mengetik
                                     ->columnSpanFull(),
 
@@ -67,12 +65,10 @@ class ProjectForm
                     ])
                     ->columnSpan(2),
 
-                // ==========================================
                 // SIDEBAR (KANAN) - Mengambil 1 Kolom
-                // ==========================================
                 Grid::make(1)
                     ->schema([
-                        Section::make('Tautan')
+                        Section::make('Links')
                             ->columns(1) // Diubah ke 1 kolom agar memanjang ke bawah di sidebar
                             ->components([
                                 TextInput::make('github_url')
@@ -88,15 +84,15 @@ class ProjectForm
                                     ->prefixIcon('heroicon-o-globe-alt'),
                             ]),
 
-                        Section::make('Pengaturan Tampilan')
+                        Section::make('Display Settings')
                             ->columns(1) // Diubah ke 1 kolom agar sejajar rapi di sidebar
                             ->components([
                                 TextInput::make('display_order')
-                                    ->label('Urutan Tampil')
+                                    ->label('Display Order')
                                     ->numeric()
                                     ->default(0)
                                     ->required()
-                                    ->helperText('Angka terkecil tampil lebih dulu.'),
+                                    ->helperText('Smallest number appears first.'),
 
                                 Toggle::make('featured')
                                     ->label('Featured')
@@ -104,7 +100,7 @@ class ProjectForm
                                     ->inline(false),
 
                                 Toggle::make('is_visible')
-                                    ->label('Tampilkan')
+                                    ->label('Visible')
                                     ->default(true)
                                     ->inline(false),
                             ]),

@@ -24,13 +24,13 @@ class SkillsTable
                     ->defaultImageUrl(fn () => 'https://ui-avatars.com/api/?name=Skill&color=7F9CF5&background=EBF4FF'),
 
                 TextColumn::make('name')
-                    ->label('Nama Skill')
+                    ->label('Skill Name')
                     ->weight('semibold')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('Ditambahkan')
+                    ->label('Added')
                     ->since()
                     ->dateTimeTooltip()
                     ->sortable()
@@ -53,7 +53,7 @@ class SkillsTable
                 ]),
             ])
             ->emptyStateIcon('heroicon-o-rectangle-stack')
-            ->emptyStateHeading('Belum ada skill')
-            ->emptyStateDescription('Tambahkan skill agar tampil sebagai daftar keahlian di halaman depan.');
+            ->emptyStateHeading('No skills found')
+            ->emptyStateDescription('Create a new skill to get started.');
     }
 }

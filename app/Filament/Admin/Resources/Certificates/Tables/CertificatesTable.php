@@ -28,38 +28,38 @@ class CertificatesTable
                     ->size(56),
 
                 TextColumn::make('name')
-                    ->label('Nama Sertifikat')
+                    ->label('Certificate Name')
                     ->weight('bold')
                     ->searchable()
                     ->sortable()
                     ->description(fn ($record) => $record->issuer),
 
                 TextColumn::make('category')
-                    ->label('Kategori')
+                    ->label('Category')
                     ->badge()
                     ->sortable()
                     ->placeholder('—'),
 
                 TextColumn::make('issue_date')
-                    ->label('Tanggal Terbit')
+                    ->label('Issue Date')
                     ->date('d M Y')
                     ->sortable()
                     ->placeholder('—'),
 
                 IconColumn::make('credential_url')
-                    ->label('Kredensial')
+                    ->label('Credential')
                     ->icon('heroicon-o-link')
                     ->color(fn ($state) => filled($state) ? 'primary' : 'gray')
                     ->url(fn ($record) => $record->credential_url, shouldOpenInNewTab: true)
-                    ->tooltip(fn ($record) => $record->credential_url ?: 'Belum ada tautan kredensial'),
+                    ->tooltip(fn ($record) => $record->credential_url ?: 'No credential link available'),
 
                 ToggleColumn::make('is_visible')
-                    ->label('Tampil'),
+                    ->label('Visible'),
             ])
             ->defaultSort('issue_date', 'desc')
             ->filters([
                 SelectFilter::make('issuer')
-                    ->label('Penerbit')
+                    ->label('Issuer')
                     ->options(fn () => \App\Models\Certificate::query()
                         ->distinct()
                         ->whereNotNull('issuer')
@@ -67,7 +67,7 @@ class CertificatesTable
                         ->toArray()),
 
                 SelectFilter::make('category')
-                    ->label('Kategori')
+                    ->label('Category')
                     ->options(fn () => \App\Models\Certificate::query()
                         ->distinct()
                         ->whereNotNull('category')
@@ -75,10 +75,10 @@ class CertificatesTable
                         ->toArray()),
 
                 TernaryFilter::make('is_visible')
-                    ->label('Status Tampil'),
+                    ->label('Display Status'),
 
                 Filter::make('has_image')
-                    ->label('Punya gambar')
+                    ->label('Have a picture')
                     ->query(fn (Builder $query) => $query->whereNotNull('image')),
             ])
             ->recordActions([

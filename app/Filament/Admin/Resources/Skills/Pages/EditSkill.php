@@ -14,7 +14,7 @@ class EditSkill extends EditRecord
     {
         return [
             DeleteAction::make()
-                ->label('Hapus Skill'),
+                ->label('Delete Skill'),
         ];
     }
 

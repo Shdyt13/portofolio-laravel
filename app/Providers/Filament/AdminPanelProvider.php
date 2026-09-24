@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('MyProfile Admin')
+            ->brandName('Sapar Hidayat. S')
             ->favicon(asset('favicon.ico'))
             ->font('Inter')
             ->colors([

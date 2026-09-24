@@ -16,12 +16,12 @@ class GalleryForm
     {
         return $schema
             ->components([
-                Section::make('Gambar Lukisan')
-                    ->description('Unggah foto karya seni dengan kualitas terbaik.')
+                Section::make('Image')
+                    ->description('Upload your artwork with the best quality.')
                     ->icon(Heroicon::OutlinedPhoto)
                     ->schema([
                         FileUpload::make('image')
-                            ->label('Gambar Lukisan')
+                            ->label('Image')
                             ->image()
                             ->imageEditor()
                             ->imageEditorAspectRatios([
@@ -35,32 +35,32 @@ class GalleryForm
                             ->downloadable()
                             ->required()
                             ->maxSize(2048)
-                            ->helperText('Format JPG atau PNG, maksimal 2MB. Disarankan resolusi tinggi agar tajam saat ditampilkan.')
+                            ->helperText('Format JPG or PNG, maximum 2MB. High resolution is recommended for sharp display.')
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Detail Lukisan')
-                    ->description('Lengkapi informasi karya agar tampil rapi di halaman publik.')
+                Section::make('Detail Image')
+                    ->description('Complete the artwork information for a neat appearance on the public page.')
                     ->icon(Heroicon::OutlinedInformationCircle)
                     ->columns(2)
                     ->schema([
                         TextInput::make('title')
-                            ->label('Judul Lukisan')
-                            ->placeholder('Contoh: Senja di Danau Toba')
+                            ->label('Title')
+                            ->placeholder('Example: Sunset at Lake Beach')
                             ->required()
                             ->maxLength(255)
                             ->columnSpan(1),
 
                         Toggle::make('is_visible')
-                            ->label('Tampilkan di Galeri Publik')
-                            ->helperText('Nonaktifkan untuk menyembunyikan lukisan dari halaman publik.')
+                            ->label('Display in Public Gallery')
+                            ->helperText('Disable to hide the artwork from the public page.')
                             ->default(true)
                             ->inline(false)
                             ->columnSpan(1),
 
                         Textarea::make('description')
-                            ->label('Deskripsi/Makna Lukisan (Opsional)')
-                            ->placeholder('Ceritakan makna atau inspirasi di balik karya ini...')
+                            ->label('Description/Significance (Optional)')
+                            ->placeholder('Tell us the meaning or inspiration behind this artwork...')
                             ->rows(4)
                             ->maxLength(1000)
                             ->columnSpanFull(),

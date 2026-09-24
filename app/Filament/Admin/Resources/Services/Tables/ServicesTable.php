@@ -25,7 +25,7 @@ class ServicesTable
                     ->size('lg'),
 
                 TextColumn::make('name')
-                    ->label('Nama Layanan')
+                    ->label('Service Name')
                     ->weight('bold')
                     ->searchable()
                     ->sortable()
@@ -35,25 +35,25 @@ class ServicesTable
                 // padahal form & model sudah memakai 'price' — menyebabkan
                 // error "Unknown column 'fee'" saat halaman list dibuka.
                 TextColumn::make('price')
-                    ->label('Tarif')
+                    ->label('Price')
                     ->badge()
                     ->color('success')
                     ->searchable()
                     ->placeholder('—'),
 
                 TextColumn::make('display_order')
-                    ->label('Urutan')
+                    ->label('Display Order')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 ToggleColumn::make('is_visible')
-                    ->label('Tampil'),
+                    ->label('Visible'),
             ])
             ->defaultSort('display_order')
             ->reorderable('display_order')
             ->filters([
                 TernaryFilter::make('is_visible')
-                    ->label('Status Tampil'),
+                    ->label('Display Status'),
             ])
             ->recordActions([
                 EditAction::make(),

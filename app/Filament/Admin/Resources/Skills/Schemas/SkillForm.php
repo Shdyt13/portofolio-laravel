@@ -15,8 +15,8 @@ class SkillForm
         return $schema
             ->columns(3)
             ->components([
-                Section::make('Logo / Ikon')
-                    ->description('Tampil sebagai ikon skill di halaman depan.')
+                Section::make('Logo / Icon')
+                    ->description('Appears as a skill icon on the front page.')
                     ->icon(Heroicon::OutlinedPhoto)
                     ->columnSpan(1)
                     ->schema([
@@ -32,16 +32,16 @@ class SkillForm
                             ->helperText('PNG transparan atau SVG agar menyatu dengan tema gelap/terang. Maksimal 1 MB.'),
                     ]),
 
-                Section::make('Detail Skill')
-                    ->description('Nama teknologi, tools, atau keahlian yang ingin ditampilkan.')
+                Section::make('Skill Details')
+                    ->description('Name of the technology, tool, or skill to be displayed.')
                     ->icon(Heroicon::OutlinedSparkles)
                     ->columnSpan(2)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nama Skill')
+                            ->label('Skill Name')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Contoh: Laravel, Python, Docker')
+                            ->placeholder('Example: Laravel, Python, Docker')
                             ->prefixIcon(Heroicon::OutlinedCodeBracket)
                             ->live(onBlur: true),
                     ]),

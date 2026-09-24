@@ -15,19 +15,19 @@ class ListGalleries extends ListRecords
     {
         return [
             CreateAction::make()
-                ->label('Tambah Lukisan'),
+                ->label('Add Image'),
         ];
     }
 
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('Semua'),
+            'all' => Tab::make('All'),
 
-            'visible' => Tab::make('Tampil di Publik')
+            'visible' => Tab::make('Display in Public')
                 ->modifyQueryUsing(fn ($query) => $query->where('is_visible', true)),
 
-            'hidden' => Tab::make('Disembunyikan')
+            'hidden' => Tab::make('Hidden')
                 ->modifyQueryUsing(fn ($query) => $query->where('is_visible', false)),
         ];
     }

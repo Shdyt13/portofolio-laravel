@@ -14,7 +14,7 @@ class ListSkills extends ListRecords
     {
         return [
             CreateAction::make()
-                ->label('Tambah Skill'),
+                ->label('Add a Skill'),
         ];
     }
 }

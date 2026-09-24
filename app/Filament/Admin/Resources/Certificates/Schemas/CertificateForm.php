@@ -16,54 +16,70 @@ class CertificateForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Sertifikat')
-                    ->description('Detail sertifikat atau pencapaian yang ingin ditampilkan.')
+                Section::make('Certificate Information')
+                    ->description('Details of the certificates or achievements you want to display.')
                     ->columns(2)
                     ->components([
                         TextInput::make('name')
-                            ->label('Nama Sertifikat')
+                            ->label('Certificate Name')
                             ->required()
                             ->maxLength(255)
                             ->placeholder('Contoh: AWS Certified Cloud Practitioner')
                             ->columnSpan(1),
 
                         TextInput::make('issuer')
-                            ->label('Penerbit (Issuer)')
+                            ->label('Issuer / Penerbit')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Contoh: Amazon Web Services')
+                            ->placeholder('Example: Web Development Certificate')
                             ->columnSpan(1),
 
                         DatePicker::make('issue_date')
-                            ->label('Tanggal Terbit (Opsional)')
+                            ->label('Issue Date (Optional)')
                             ->native(false)
                             ->displayFormat('d M Y')
                             ->columnSpan(1),
 
                         Select::make('category')
-                            ->label('Kategori')
-                            ->options([
-                                'Web Development' => 'Web Development',
-                                'Cloud' => 'Cloud',
+                            ->label('Category')
+                            // Perbarui path Get di sini
+                            ->options(function (\Filament\Schemas\Components\Utilities\Get $get) {
+                                $defaultOptions = [
+                                    'Web Development' => 'Web Development',
+                                    'Cloud' => 'Cloud',
                                 'Data' => 'Data',
                                 'Design' => 'Design',
                                 'Lainnya' => 'Lainnya',
-                            ])
-                            ->searchable()
-                            ->createOptionForm([
-                                TextInput::make('name')->required(),
-                            ])
-                            ->columnSpan(1),
+                            ];
+
+                            $currentCategory = $get('category');
+
+                            if ($currentCategory && !isset($defaultOptions[$currentCategory])) {
+                                $defaultOptions[$currentCategory] = $currentCategory;
+                            }
+
+                            return $defaultOptions;
+                        })
+                        ->searchable()
+                        ->createOptionForm([
+                            TextInput::make('name')
+                                ->label('New Category Name')
+                                ->required(),
+                        ])
+                        ->createOptionUsing(function (array $data): string {
+                            return $data['name'];
+                        })
+                        ->columnSpan(1),
 
                         TextInput::make('credential_id')
-                            ->label('ID Kredensial (Opsional)')
+                            ->label('Credential ID (Optional)')
                             ->maxLength(255)
-                            ->placeholder('Contoh: ABC-123456')
+                            ->placeholder('Example: ABC-123456')
                             ->columnSpan(1),
 
                         TextInput::make('credential_url')
-                            ->label('URL Kredensial (Opsional)')
-                            ->helperText('Tautan verifikasi eksternal, contoh dari Credly / LinkedIn.')
+                            ->label('Credential URL (Optional)')
+                            ->helperText('External verification link, e.g., from Credly / LinkedIn.')
                             ->url()
                             ->maxLength(255)
                             ->placeholder('https://www.credly.com/...')
@@ -71,24 +87,24 @@ class CertificateForm
                             ->columnSpan(1),
 
                         Toggle::make('is_visible')
-                            ->label('Tampilkan di Portofolio')
+                            ->label('Display in Portfolio')
                             ->default(true)
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Gambar Sertifikat')
-                    ->description('Unggah scan atau tangkapan layar sertifikat (format gambar, maks. 2MB).')
+                Section::make('Certificate Image')
+                    ->description('Upload a scan or screenshot of the certificate (image format, max. 2MB).')
                     ->columns(1)
                     ->components([
                         FileUpload::make('image')
-                            ->label('Gambar Sertifikat')
+                            ->label('Certificate Image')
                             ->image()
                             ->imageEditor()
                             ->imagePreviewHeight('250')
                             ->directory('certificates')
                             ->visibility('public')
                             ->maxSize(2048)
-                            ->helperText('Format yang didukung: JPG, PNG, WEBP.')
+                            ->helperText('Supported formats: JPG, PNG, WEBP. Maximum size: 2 MB.')
                             ->columnSpanFull(),
                     ]),
             ]);
