@@ -8,8 +8,7 @@ use App\Models\Gallery;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Mengirim pesan dari form Contact
-Route::post('/contact', [HomeController::class, 'sendMessage'])
-    ->name('contact.send');
+Route::post('/contact/send', [HomeController::class, 'sendMessage'])->name('contact.send');
 
 // Route fallback untuk login panel admin Filament
 Route::get('/login', function () {

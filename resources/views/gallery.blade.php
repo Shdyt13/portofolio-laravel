@@ -157,9 +157,86 @@
             padding: 1rem;
             border-top: 1px solid var(--line);
         }
+
+        /* ============================================================
+           LAPISAN INTERAKTIF TAMBAHAN
+           (Tidak mengubah token warna / struktur komponen di atas,
+           hanya menambah transisi, animasi, dan micro-interaction)
+           ============================================================ */
+
+        /* --- Scroll progress bar --- */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: var(--accent); z-index: 60;
+            transition: width .12s ease-out;
+        }
+
+        /* --- Reveal-on-scroll (dipasang lewat JS, tidak mengubah markup) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .55s ease, transform .55s ease;
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+        /* --- Tilt halus pada kartu galeri saat mouse bergerak --- */
+        .card-hover { transition: border-color .3s ease, box-shadow .3s ease, transform .18s ease-out; }
+
+        /* --- Kursor "lihat" saat hover thumbnail galeri --- */
+        .gallery-thumb-wrap { position: relative; cursor: zoom-in; }
+        .gallery-thumb-wrap::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,.35), transparent 55%);
+            opacity: 0; transition: opacity .3s ease;
+            pointer-events: none;
+        }
+        .card-hover:hover .gallery-thumb-wrap::after { opacity: 1; }
+
+        /* --- Underline hover pada nav link (tidak mengganggu state aktif) --- */
+        .nav-link::after {
+            content: ''; position: absolute; left: 0; right: 0; bottom: -2px;
+            height: 2px; border-radius: 9999px; background: var(--accent);
+            transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+        }
+        .nav-link:hover::after { transform: scaleX(1); }
+
+        /* --- Efek magnetik ringan pada icon button --- */
+        .icon-btn { transform: translate(var(--mx, 0px), var(--my, 0px)); }
+
+        /* --- Transisi buka/tutup menu mobile yang lebih halus --- */
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #mobile-menu.menu-enter { animation: fadeSlideDown .25s ease forwards; }
+
+        /* --- Tombol kembali ke atas --- */
+        #back-to-top {
+            position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 50;
+            width: 3rem; height: 3rem; border-radius: 9999px;
+            display: grid; place-items: center;
+            background: var(--surface); border: 1px solid var(--line); color: var(--accent);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,.2);
+            opacity: 0; transform: translateY(14px) scale(.9); pointer-events: none;
+            transition: opacity .3s ease, transform .3s ease, border-color .2s ease;
+        }
+        #back-to-top.is-visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        #back-to-top:hover { border-color: var(--accent); transform: translateY(-3px) scale(1.05); }
+
+        /* --- Loading fade-in halaman --- */
+        body { opacity: 0; transition: opacity .4s ease; }
+        body.is-loaded { opacity: 1; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1 !important; transform: none !important; }
+        }
     </style>
 
     <div class="font-body bg-page text-fg min-h-screen flex flex-col pt-20 transition-colors duration-300 selection:bg-blue-500/30">
+
+        <div id="scroll-progress" aria-hidden="true"></div>
 
         {{-- ================= NAVBAR ================= --}}
         <header class="fixed inset-x-0 top-0 z-50 border-b border-line backdrop-blur-md transition-all duration-300" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
@@ -231,11 +308,16 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 @forelse($galleries as $item)
                     <div class="card card-hover group flex flex-col overflow-hidden bg-surface-2">
-                        <div class="overflow-hidden bg-muted/10 relative">
+                        <div class="overflow-hidden bg-muted/10 relative cursor-pointer js-lightbox-trigger" data-image="{{ asset('storage/' . $item->image) }}">
                             <img src="{{ asset('storage/' . $item->image) }}"
-                                 alt="{{ $item->title }}"
-                                 loading="lazy"
-                                 class="gallery-thumb">
+                                alt="{{ $item->title }}"
+                                loading="lazy"
+                                class="gallery-thumb">
+                            
+                            {{-- Ikon perbesaran opsional di tengah saat dihover --}}
+                            <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 flex items-center justify-center card-hover:hover:opacity-100 pointer-events-none z-10">
+                                <svg class="text-white w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                            </div>
                         </div>
 
                         <div class="gallery-caption bg-surface flex-grow flex flex-col justify-between">
@@ -299,6 +381,21 @@
             </div>
         </footer>
 
+        <button type="button" id="back-to-top" aria-label="Kembali ke atas">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+        </button>
+
+        {{-- ================= MODAL LIGHTBOX ================= --}}
+        <div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+            <button type="button" id="lightbox-close" class="absolute top-4 right-4 sm:top-8 sm:right-8 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-2 transition-all duration-200" aria-label="Tutup">
+                <svg class="h-6 w-6 sm:h-8 sm:w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <img id="lightbox-img"
+                src=""
+                alt="Perbesaran Gambar Galeri"
+                class="max-h-[90vh] max-w-full rounded-md shadow-2xl scale-95 transition-transform duration-300 object-contain m-auto mx-auto">
+        </div>
     </div> {{-- Penutup flex container utama --}}
 
     {{-- ================= SCRIPTS ================= --}}
@@ -319,15 +416,19 @@
         (function () {
             var btn = document.getElementById('menu-btn');
             var menu = document.getElementById('mobile-menu');
+
             if (!btn || !menu) return;
-            
+
             btn.addEventListener('click', function () {
                 var isHidden = menu.classList.contains('hidden');
-                if(isHidden) {
+
+                if (isHidden) {
                     menu.classList.remove('hidden');
+                    menu.classList.add('menu-enter');
                     btn.setAttribute('aria-expanded', 'true');
                 } else {
                     menu.classList.add('hidden');
+                    menu.classList.remove('menu-enter');
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -340,32 +441,35 @@
             });
         })();
 
-        // Scroll Spy (Aman dari error karena filter(Boolean))
+        // Scroll Spy
         (function () {
             var links = document.querySelectorAll('[data-nav]');
             var mobileLinks = document.querySelectorAll('[data-nav-mobile]');
-            var sections = Array.from(links).map(function (l) {
-                return document.getElementById(l.dataset.nav);
-            }).filter(Boolean); 
+
+            var sections = Array.from(links)
+                .map(function (l) {
+                    return document.getElementById(l.dataset.nav);
+                })
+                .filter(Boolean);
 
             var observer = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
                     if (!entry.isIntersecting) return;
-                    
+
                     var currentId = entry.target.id;
-                    
+
                     // Update Desktop Nav
                     links.forEach(function (l) {
-                        if(l.dataset.nav === currentId) {
+                        if (l.dataset.nav === currentId) {
                             l.classList.add('is-active');
                         } else {
                             l.classList.remove('is-active');
                         }
                     });
-                    
+
                     // Update Mobile Nav
                     mobileLinks.forEach(function (l) {
-                        if(l.dataset.navMobile === currentId) {
+                        if (l.dataset.navMobile === currentId) {
                             l.classList.add('text-accent', 'font-bold');
                             l.classList.remove('text-muted');
                         } else {
@@ -374,9 +478,227 @@
                         }
                     });
                 });
-            }, { rootMargin: '-20% 0px -75% 0px' });
+            }, {
+                rootMargin: '-20% 0px -75% 0px'
+            });
 
-            sections.forEach(function (s) { observer.observe(s); });
+            sections.forEach(function (s) {
+                observer.observe(s);
+            });
+        })();
+
+        // LAPISAN INTERAKTIF TAMBAHAN
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // --- Fade-in halaman saat load ---
+            window.addEventListener('load', function () {
+                document.body.classList.add('is-loaded');
+            });
+
+            // --- Scroll progress bar ---
+            var progressBar = document.getElementById('scroll-progress');
+
+            function updateProgress() {
+                if (!progressBar) return;
+
+                var h = document.documentElement;
+                var scrolled = h.scrollTop;
+                var max = h.scrollHeight - h.clientHeight;
+                var pct = max > 0 ? (scrolled / max) * 100 : 0;
+
+                progressBar.style.width = pct + '%';
+            }
+
+            document.addEventListener('scroll', updateProgress, {
+                passive: true
+            });
+
+            updateProgress();
+
+            // --- Tombol back-to-top ---
+            var backToTop = document.getElementById('back-to-top');
+
+            if (backToTop) {
+                document.addEventListener('scroll', function () {
+                    backToTop.classList.toggle(
+                        'is-visible',
+                        window.scrollY > 480
+                    );
+                }, {
+                    passive: true
+                });
+
+                backToTop.addEventListener('click', function () {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: reduceMotion ? 'auto' : 'smooth'
+                    });
+                });
+            }
+
+            // --- Tandai wrapper thumbnail galeri ---
+            document.querySelectorAll('.card-hover').forEach(function (card) {
+                var thumbWrap = card.querySelector(':scope > div:first-child');
+
+                if (thumbWrap) {
+                    thumbWrap.classList.add('gallery-thumb-wrap');
+                }
+            });
+
+            // --- Reveal on scroll ---
+            if (!reduceMotion) {
+                var revealTargets = document.querySelectorAll(
+                    'main > div, .card'
+                );
+
+                var revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+
+                revealTargets.forEach(function (el, i) {
+                    el.classList.add('reveal');
+                    el.style.transitionDelay = ((i % 8) * 50) + 'ms';
+                    revealObserver.observe(el);
+                });
+            }
+
+            // --- Tilt halus pada kartu galeri ---
+            if (
+                !reduceMotion &&
+                window.matchMedia('(hover: hover) and (pointer: fine)').matches
+            ) {
+                document.querySelectorAll('.card-hover').forEach(function (el) {
+
+                    el.addEventListener('mousemove', function (e) {
+                        var r = el.getBoundingClientRect();
+
+                        var px = (e.clientX - r.left) / r.width - 0.5;
+                        var py = (e.clientY - r.top) / r.height - 0.5;
+
+                        el.style.transform =
+                            'translateY(-4px) rotateX(' +
+                            (py * -3) +
+                            'deg) rotateY(' +
+                            (px * 3) +
+                            'deg)';
+                    });
+
+                    el.addEventListener('mouseleave', function () {
+                        el.style.transform = '';
+                    });
+                });
+
+                // --- Efek magnetik ringan pada icon button ---
+                document.querySelectorAll('.icon-btn').forEach(function (el) {
+
+                    el.addEventListener('mousemove', function (e) {
+                        var r = el.getBoundingClientRect();
+
+                        var mx =
+                            (e.clientX - r.left - r.width / 2) * 0.25;
+
+                        var my =
+                            (e.clientY - r.top - r.height / 2) * 0.25;
+
+                        el.style.setProperty('--mx', mx + 'px');
+                        el.style.setProperty('--my', my + 'px');
+                    });
+
+                    el.addEventListener('mouseleave', function () {
+                        el.style.setProperty('--mx', '0px');
+                        el.style.setProperty('--my', '0px');
+                    });
+                });
+            }
+        })();
+
+        // --- Modal Lightbox Galeri ---
+        (function () {
+            var lightbox = document.getElementById('lightbox');
+            var lightboxImg = document.getElementById('lightbox-img');
+            var closeBtn = document.getElementById('lightbox-close');
+            var triggers = document.querySelectorAll('.js-lightbox-trigger');
+
+            if (!lightbox || !lightboxImg) return;
+
+            function openLightbox(url) {
+                lightboxImg.src = url;
+
+                // Tampilkan lightbox
+                lightbox.classList.remove('hidden');
+                lightbox.classList.add('flex');
+
+                // Mencegah scroll pada halaman latar belakang
+                document.body.style.overflow = 'hidden';
+
+                // Beri jeda sangat kecil agar transisi Tailwind berjalan
+                requestAnimationFrame(function () {
+                    lightbox.classList.remove('opacity-0');
+                    lightboxImg.classList.remove('scale-95');
+                    lightboxImg.classList.add('scale-100');
+                });
+            }
+
+            function closeLightbox() {
+                lightbox.classList.add('opacity-0');
+
+                lightboxImg.classList.remove('scale-100');
+                lightboxImg.classList.add('scale-95');
+
+                // Kembalikan scroll halaman
+                document.body.style.overflow = '';
+
+                // Sembunyikan elemen setelah transisi selesai (300ms)
+                setTimeout(function () {
+                    lightbox.classList.add('hidden');
+                    lightbox.classList.remove('flex');
+
+                    // Kosongkan src agar tidak berkedip saat dibuka lagi
+                    lightboxImg.src = '';
+                }, 300);
+            }
+
+            // Pasang event klik pada semua gambar galeri
+            triggers.forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    var imageUrl = this.getAttribute('data-image');
+
+                    if (imageUrl) {
+                        openLightbox(imageUrl);
+                    }
+                });
+            });
+
+            // Event penutup lightbox
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeLightbox);
+            }
+
+            // Tutup saat mengklik area hitam (luar gambar)
+            lightbox.addEventListener('click', function (e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // Tutup menggunakan tombol Escape
+            document.addEventListener('keydown', function (e) {
+                if (
+                    e.key === 'Escape' &&
+                    !lightbox.classList.contains('hidden')
+                ) {
+                    closeLightbox();
+                }
+            });
         })();
     </script>
 </x-layout>

@@ -9,6 +9,8 @@ use App\Models\Certificate;
 use App\Models\Message;
 use App\Models\Profile;
 use App\Models\Service;
+use Illuminate\Support\Facades\Mail; // <-- Tambahkan ini
+use App\Mail\ContactFormMail;
 
 class HomeController extends Controller
 {
@@ -62,14 +64,20 @@ class HomeController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $request->validate([
+        // 1. Validasi input
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'message' => 'required|string',
         ]);
 
-        Message::create($request->all());
+        // 2. Simpan ke database
+        Message::create($validatedData);
 
+        // 3. Kirim email notifikasi ke email Anda
+        Mail::to('saparhdyt13@gmail.com')->send(new ContactFormMail($validatedData));
+
+        // 4. Redirect kembali dengan pesan sukses
         return redirect('/#contact')
             ->with('success', 'Pesan Anda berhasil dikirim!');
     }

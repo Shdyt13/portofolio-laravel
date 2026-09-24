@@ -144,6 +144,91 @@
             html { scroll-behavior: auto; }
             * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
+
+        /* ============================================================
+           LAPISAN INTERAKTIF TAMBAHAN
+           (Tidak mengubah token warna / struktur komponen di atas,
+           hanya menambah transisi, animasi, dan micro-interaction)
+           ============================================================ */
+
+        /* --- Scroll progress bar --- */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: var(--accent); z-index: 60;
+            transition: width .12s ease-out;
+        }
+
+        /* --- Reveal-on-scroll (dipasang lewat JS, tidak mengubah markup) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity .6s ease, transform .6s ease;
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+        .reveal-stagger.is-visible { transition-delay: var(--stagger-delay, 0ms); }
+
+        /* --- Transisi transform tambahan untuk efek tilt kartu --- */
+        .card { transition: border-color .3s ease, box-shadow .3s ease, transform .18s ease-out; }
+        article.group { transition: transform .18s ease-out, border-color .3s ease, box-shadow .3s ease; }
+
+        /* --- Ripple efek klik pada tombol --- */
+        .btn { position: relative; overflow: hidden; }
+        .btn .ripple {
+            position: absolute; border-radius: 9999px; pointer-events: none;
+            background: rgba(255,255,255,.55);
+            transform: scale(0); opacity: 1;
+            animation: rippleAnim .6s ease-out forwards;
+        }
+        .dark .btn .ripple { background: rgba(255,255,255,.28); }
+        @keyframes rippleAnim { to { transform: scale(3.2); opacity: 0; } }
+
+        /* --- Magnetic hover untuk icon button --- */
+        .icon-btn { transform: translate(var(--mx, 0px), var(--my, 0px)); transition: transform .15s ease-out, color .2s ease, border-color .2s ease; }
+
+        /* --- Underline hover pada nav link (tidak mengganggu state aktif) --- */
+        .nav-link::after {
+            content: ''; position: absolute; left: 0; right: 0; bottom: -2px;
+            height: 2px; border-radius: 9999px; background: var(--accent);
+            transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+        }
+        .nav-link:hover::after { transform: scaleX(1); }
+
+        /* --- Transisi buka/tutup menu mobile yang lebih halus --- */
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #mobile-menu.menu-enter { animation: fadeSlideDown .25s ease forwards; }
+
+        /* --- Float halus pada glow di belakang foto profil --- */
+        #home .blur-3xl { animation: floatBlur 6s ease-in-out infinite; }
+        @keyframes floatBlur {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50%      { transform: translate(-50%, -48%) scale(1.05); }
+        }
+
+        /* --- Tombol kembali ke atas --- */
+        #back-to-top {
+            position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 50;
+            width: 3rem; height: 3rem; border-radius: 9999px;
+            display: grid; place-items: center;
+            background: var(--surface); border: 1px solid var(--line); color: var(--accent);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,.2);
+            opacity: 0; transform: translateY(14px) scale(.9); pointer-events: none;
+            transition: opacity .3s ease, transform .3s ease, border-color .2s ease;
+        }
+        #back-to-top.is-visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        #back-to-top:hover { border-color: var(--accent); transform: translateY(-3px) scale(1.05); }
+
+        /* --- Loading fade-in halaman --- */
+        body { opacity: 0; transition: opacity .4s ease; }
+        body.is-loaded { opacity: 1; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1 !important; transform: none !important; }
+            #home .blur-3xl { animation: none; }
+        }
     </style>
 
     @php
@@ -169,6 +254,8 @@
     @endphp
 
     <div class="font-body bg-page text-fg min-h-screen overflow-x-hidden transition-colors duration-300 selection:bg-blue-500/30">
+
+        <div id="scroll-progress" aria-hidden="true"></div>
 
         {{-- ================= NAVBAR ================= --}}
         <header class="fixed inset-x-0 top-0 z-50 border-b border-line backdrop-blur-md transition-all duration-300" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
@@ -780,6 +867,10 @@
 
                 </div>
             </footer>
+
+        <button type="button" id="back-to-top" aria-label="Kembali ke atas">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+        </button>
     </div>
 
     <script>
@@ -805,9 +896,11 @@
                 var isHidden = menu.classList.contains('hidden');
                 if(isHidden) {
                     menu.classList.remove('hidden');
+                    menu.classList.add('menu-enter');
                     btn.setAttribute('aria-expanded', 'true');
                 } else {
                     menu.classList.add('hidden');
+                    menu.classList.remove('menu-enter');
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -858,6 +951,111 @@
             }, { rootMargin: '-20% 0px -75% 0px' });
 
             sections.forEach(function (s) { observer.observe(s); });
+        })();
+
+        // ============================================================
+        // LAPISAN INTERAKTIF TAMBAHAN
+        // ============================================================
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // --- Fade-in halaman saat load ---
+            window.addEventListener('load', function () {
+                document.body.classList.add('is-loaded');
+            });
+
+            // --- Scroll progress bar ---
+            var progressBar = document.getElementById('scroll-progress');
+            function updateProgress() {
+                if (!progressBar) return;
+                var h = document.documentElement;
+                var scrolled = h.scrollTop;
+                var max = h.scrollHeight - h.clientHeight;
+                var pct = max > 0 ? (scrolled / max) * 100 : 0;
+                progressBar.style.width = pct + '%';
+            }
+            document.addEventListener('scroll', updateProgress, { passive: true });
+            updateProgress();
+
+            // --- Tombol back-to-top ---
+            var backToTop = document.getElementById('back-to-top');
+            if (backToTop) {
+                document.addEventListener('scroll', function () {
+                    backToTop.classList.toggle('is-visible', window.scrollY > 480);
+                }, { passive: true });
+                backToTop.addEventListener('click', function () {
+                    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+                });
+            }
+
+            // --- Reveal on scroll: tempel otomatis ke section & kartu yang sudah ada ---
+            if (!reduceMotion) {
+                var revealTargets = document.querySelectorAll(
+                    'main > section, .card, article.group'
+                );
+                var revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry, i) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+                revealTargets.forEach(function (el, i) {
+                    el.classList.add('reveal', 'reveal-stagger');
+                    el.style.setProperty('--stagger-delay', ((i % 6) * 60) + 'ms');
+                    revealObserver.observe(el);
+                });
+            }
+
+            // --- Tilt halus pada kartu skill/project/certificate saat mouse bergerak ---
+            if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                var tiltEls = document.querySelectorAll('.card, article.group');
+                tiltEls.forEach(function (el) {
+                    el.addEventListener('mousemove', function (e) {
+                        var r = el.getBoundingClientRect();
+                        var px = (e.clientX - r.left) / r.width - 0.5;
+                        var py = (e.clientY - r.top) / r.height - 0.5;
+                        el.style.transform = 'translateY(-2px) rotateX(' + (py * -4) + 'deg) rotateY(' + (px * 4) + 'deg)';
+                    });
+                    el.addEventListener('mouseleave', function () {
+                        el.style.transform = '';
+                    });
+                });
+
+                // --- Efek magnetik ringan pada icon button (tema/menu) ---
+                document.querySelectorAll('.icon-btn').forEach(function (el) {
+                    el.addEventListener('mousemove', function (e) {
+                        var r = el.getBoundingClientRect();
+                        var mx = (e.clientX - r.left - r.width / 2) * 0.25;
+                        var my = (e.clientY - r.top - r.height / 2) * 0.25;
+                        el.style.setProperty('--mx', mx + 'px');
+                        el.style.setProperty('--my', my + 'px');
+                    });
+                    el.addEventListener('mouseleave', function () {
+                        el.style.setProperty('--mx', '0px');
+                        el.style.setProperty('--my', '0px');
+                    });
+                });
+            }
+
+            // --- Ripple effect saat tombol .btn diklik ---
+            document.querySelectorAll('.btn').forEach(function (el) {
+                el.addEventListener('click', function (e) {
+                    var r = el.getBoundingClientRect();
+                    var ripple = document.createElement('span');
+                    var size = Math.max(r.width, r.height);
+                    ripple.className = 'ripple';
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+                    ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+                    el.appendChild(ripple);
+                    ripple.addEventListener('animationend', function () {
+                        ripple.remove();
+                    });
+                });
+            });
         })();
     </script>
 </x-layout>

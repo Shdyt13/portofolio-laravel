@@ -28,8 +28,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('MyProfile Admin')
+            ->favicon(asset('favicon.ico'))
+            ->font('Inter')
             ->colors([
-                'primary' => Color::Amber,
+                // Sama persis dengan --accent (#2563EB) di welcome.blade.php
+                'primary' => Color::Blue,
+                // Menyamakan skala netral (bg/border/teks) dengan token
+                // --bg, --line, --fg, --muted di halaman utama yang memakai Tailwind Slate
+                'gray' => Color::Slate,
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
